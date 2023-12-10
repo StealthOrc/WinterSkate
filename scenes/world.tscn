@@ -1,0 +1,86 @@
+[gd_scene load_steps=11 format=3 uid="uid://c1lo67tygb6jm"]
+
+[ext_resource type="Script" path="res://scenes/world.gd" id="1_8q2us"]
+[ext_resource type="Texture2D" uid="uid://d01xne44p3x0m" path="res://images/PixelWhale_SF_Project/Background/bg01.png" id="1_ga1m4"]
+[ext_resource type="Texture2D" uid="uid://dv2q8i0jo6mt7" path="res://images/PixelWhale_SF_Project/Object/adasdasdwx.png" id="2_u4gc0"]
+[ext_resource type="Texture2D" uid="uid://qq4do85irqf2" path="res://2d_lights_and_shadows_neutral_point_light.webp" id="3_nxl5f"]
+[ext_resource type="Texture2D" uid="uid://dxxo16vyla6kc" path="res://images/Rail_Horz.png" id="4_u4fl5"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="5_flm5r"]
+[ext_resource type="Texture2D" uid="uid://clnbqrtq5u0f8" path="res://images/PixelWhale_SF_Project/Object/sf_ice.png" id="5_yqdo4"]
+[ext_resource type="Script" path="res://scripts/Line2D.gd" id="8_72nwg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f4cfa"]
+
+[sub_resource type="Curve2D" id="Curve2D_dfyhm"]
+bake_interval = 200.0
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -400, -100, 0, 0, 0, 0, 248, -90, 0, 0, 0, 0, 247, 99, 0, 0, 0, 0, 8, 96, 0, 0, 0, 0, 8, 240, 0, 0, 0, 0, 235, 421, 0, 0, 0, 0, -400, 440)
+}
+point_count = 7
+
+[node name="world" type="Node2D"]
+script = ExtResource("1_8q2us")
+
+[node name="BGSprite" type="Sprite2D" parent="."]
+position = Vector2(576.5, 324)
+scale = Vector2(6.71213, 3.77375)
+texture = ExtResource("1_ga1m4")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
+color = Color(0, 0, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="AutomatSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(334, 442)
+texture = ExtResource("2_u4gc0")
+
+[node name="PointLight2D" type="PointLight2D" parent="AutomatSprite"]
+position = Vector2(11, 2)
+scale = Vector2(0.314678, 0.331767)
+texture = ExtResource("3_nxl5f")
+texture_scale = 0.25
+
+[node name="PointLight2D2" type="PointLight2D" parent="AutomatSprite"]
+position = Vector2(-14, -9)
+scale = Vector2(0.52388, 0.639998)
+texture = ExtResource("3_nxl5f")
+texture_scale = 0.25
+
+[node name="Player" type="Node2D" parent="."]
+position = Vector2(52, 138)
+script = ExtResource("5_flm5r")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+position = Vector2(3, -2)
+scale = Vector2(0.480002, 0.480002)
+texture = ExtResource("5_yqdo4")
+
+[node name="RailDetector" type="Area2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/RailDetector"]
+scale = Vector2(3.24, 3.24)
+shape = SubResource("CircleShape2D_f4cfa")
+
+[node name="Path2D" type="Path2D" parent="."]
+position = Vector2(485, 144)
+curve = SubResource("Curve2D_dfyhm")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+position = Vector2(-400, -100)
+rotation = 0.0154309
+
+[node name="Line2D" type="Line2D" parent="." node_paths=PackedStringArray("static_body")]
+position = Vector2(485, 144)
+width = 5.0
+texture = ExtResource("4_u4fl5")
+texture_mode = 1
+script = ExtResource("8_72nwg")
+static_body = NodePath("StaticBody2D")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Line2D"]
+scale = Vector2(0.75, 0.75)
+
+[connection signal="body_entered" from="Player/RailDetector" to="." method="_on_rail_detector_body_entered"]
